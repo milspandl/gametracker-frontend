@@ -6,7 +6,7 @@ export default function EstadisticasPersonales(){
 
   const cargar = async () => {
     try {
-      const r = await axios.get("http://localhost:4000/api/games");
+      const r = await axios.get("https://gametracker-backend-1.onrender.com/api/games");
       setTotal((r.data || []).length);
     } catch (e) {
       setTotal(0);

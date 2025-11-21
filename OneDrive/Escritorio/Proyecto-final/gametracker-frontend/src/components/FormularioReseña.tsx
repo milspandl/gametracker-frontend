@@ -1,22 +1,57 @@
 import axios from "axios";
 import { useState } from "react";
 
-export default function FormularioReseña({ recargar }: any){
-  const [data, setData] = useState({ texto:"", estrellas:5, juegoId:"1234567890" });
+const API_URL = "https://gametracker-backend-1.onrender.com/api";
 
-  const enviar = async (e:any) => {
+// Por ahora el juegoId queda fijo (después lo conectamos a cada tarjeta)
+const DEFAULT_GAME_ID = "1234567890";
+
+export default function FormularioReseña({ recargar }: any) {
+  const [data, setData] = useState({
+    texto: "",
+    estrellas: 5,
+    juegoId: DEFAULT_GAME_ID
+  });
+
+  const enviar = async (e: any) => {
     e.preventDefault();
+
     try {
-      await axios.post("http://localhost:4000/api/reviews", data);
-      setData({ texto:"", estrellas:5, juegoId:"1234567890" });
+      await axios.post(`${API_URL}/reviews`, data);
+
+      // limpiar
+      setData({
+        texto: "",
+        estrellas: 5,
+        juegoId: DEFAULT_GAME_ID
+      });
+
       if (recargar) recargar();
-    } catch (e) { console.error(e); alert("Error al enviar reseña"); }
+
+    } catch (e) {
+      console.error(e);
+      alert("Error al enviar reseña");
+    }
   };
 
   return (
-    <form onSubmit={enviar} style={{display:"flex", gap:8, marginTop:8}}>
-      <input placeholder="Escribir reseña..." value={data.texto} onChange={e=>setData({...data, texto:e.target.value})} />
-      <input type="number" min={1} max={5} value={data.estrellas} onChange={e=>setData({...data, estrellas:Number(e.target.value)})} />
+    <form onSubmit={enviar} className="review-form">
+      <input
+        placeholder="Escribir reseña..."
+        value={data.texto}
+        onChange={e => setData({ ...data, texto: e.target.value })}
+        className="review-input"
+      />
+
+      <input
+        type="number"
+        min={1}
+        max={5}
+        value={data.estrellas}
+        onChange={e => setData({ ...data, estrellas: Number(e.target.value) })}
+        className="review-stars-input"
+      />
+
       <button className="btn" type="submit">Enviar</button>
     </form>
   );
